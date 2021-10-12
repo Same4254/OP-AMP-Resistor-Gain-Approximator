@@ -213,7 +213,7 @@ if __name__ == '__main__':
         numExpressions = int(input("How many expressions will there be? "))
 
         if numExpressions == "exit":
-            return
+            break
 
         expressions = []
         targetGains = []
