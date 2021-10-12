@@ -196,9 +196,6 @@ if __name__ == '__main__':
     print("-----------------------")
     print()
 
-    print("-----------------------")
-    print()
-
     print("Type exit to leave the program")
 
     print("-----------------------")
