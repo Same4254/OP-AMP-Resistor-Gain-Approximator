@@ -62,46 +62,66 @@ def findClosest(list, value):
 def findBest(r10):
     largestError = 10000000000
 
-    for r2 in resistors:
-        # r1 = r2 / 1.96
-        # r1 = findClosest(resistors, r1)
-        for r1 in resistors:
+    # for r2 in resistors:
+    #     for r1 in resistors:
+    #         for r10 in resistors:
+    #             for r11 in resistors:
+    #                 for r3 in resistors:
+    #                     for p1 in potentiometers:
+    #                         for p2 in potentiometers:
+    #                             for c1 in capacitors:
+    #                                 qFactor = (0.5 * math.sqrt(r2 / r1))
+    #                                 frequency = 1 / (2 * math.pi * (c1) * math.sqrt(r1 * r2))
+    #                                 # minGain = (r2 * (r10 + r21)) / (2 * r1 * (r11 + p12))
+    #                                 # maxGain = (r2 * (r10 + r21)) / (2 * r1 * (r11))
+    #
+    #                                 minGain = (r2 / (2 * r1)) * (r10 / r11) * (1)
+    #                                 maxGain = (r2 / (2 * r1)) * (r10 / r11) * (1 + ((p1 + p2) / r3))
+    #
+    #                                 qFactorError = abs((qFactor - 0.7) / 0.7)
+    #                                 frequencyError = abs((frequency - 200) / 200)
+    #                                 minGainError = abs((minGain - 0.4) / 0.4)
+    #                                 maxGainError = abs((maxGain - 8) / 8)
+    #
+    #                                 maxError = max(qFactorError, frequencyError, minGainError, maxGainError)
+    #                                 current = {"r1":r1, "r2":r2, "c1":c1,"r10":r10,"r11":r11,"r3":r3,"p1":p1,"p2":p2,"frequency":frequency,"qfactor":qFactor,"minGain":minGain,"maxGain":maxGain,"maxError":maxError}
+    #
+    #                                 if maxError < largestError:
+    #                                     largestError = maxError
+    #                                     best = current
 
+    for r10 in resistors:
+        for r11 in resistors:
+            for r12 in resistors:
+                for r13 in resistors:
+                    minGain1 = (r10 / r11)
+                    maxGain1 = ((r10 * 21) / r11)
 
+                    minGain2 = (r10 / r12)
+                    maxGain2 = ((r10 * 21) / r12)
 
-            for c1 in capacitors:
-                for c2 in capacitors:
-            # c1 = 1 / (2 * math.pi * 200 * math.sqrt(r1 * r2))
-            # c1 = findClosest(capacitors, c1)
+                    minGain3 = (r10 / r13)
+                    maxGain3 = ((r10 * 21) / r13)
 
+                    minGain1Error = abs((minGain1 - 0.4) / 0.4)
+                    maxGain1Error = abs((maxGain1 - 8) / 8)
 
+                    minGain2Error = abs((minGain2 - 0.2) / 0.2)
+                    maxGain2Error = abs((maxGain2 - 4) / 4)
 
-                # r11 = findClosest(resistors, (r2 * r10) / (2 * r1 * 8))
-                # p12 = findClosest(potentiometers, (((r2 * r10) / (2 * r1)) - (0.4 * r11)) / 0.4)
+                    minGain3Error = abs((minGain3 - 0.1) / 0.1)
+                    maxGain3Error = abs((maxGain3 - 2) / 2)
 
-                    for r11 in resistors:
-                        for r21 in resistors:
-                            for p12 in potentiometers:
-                                qFactor = (0.5 * math.sqrt(r2 / r1))
-                                frequency = 1 / (2 * math.pi * (c1 + c2) * math.sqrt(r1 * r2))
-                                minGain = (r2 * (r10 + r21)) / (2 * r1 * (r11 + p12))
-                                maxGain = (r2 * (r10 + r21)) / (2 * r1 * (r11))
+                    maxError = max(minGain1Error, maxGain1Error, minGain2Error, maxGain2Error,minGain3Error,maxGain3Error)
+                    current = {"r10": r10, "r11": r11, "r12":r12,"r13":r13,"minGain": minGain1, "maxGain": maxGain1,"minGain2": minGain2, "maxGain2": maxGain2,"minGain3": minGain3, "maxGain3": maxGain3, "maxError": maxError}
 
-                                qFactorError = abs((qFactor - 0.7) / 0.7)
-                                frequencyError = abs((frequency - 200) / 200)
-                                minGainError = abs((minGain - 0.4) / 0.4)
-                                maxGainError = abs((maxGain - 8) / 8)
-
-                                maxError = max(qFactorError, frequencyError, minGainError, maxGainError)
-                                current = {"r1":r1, "r2":r2, "c1":c1,"c2":c2,"r10":r10,"r11":r11,"p12":p12,"r21":r21,"frequency":frequency,"qfactor":qFactor,"minGain":minGain,"maxGain":maxGain,"maxError":maxError}
-
-                                if maxError < largestError:
-                                    largestError = maxError
-                                    best = current
+                    if maxError < largestError:
+                        largestError = maxError
+                        best = current
     return best
 
 if __name__ == '__main__':
-    with Pool(8) as p:
+    with Pool(4) as p:
         results = p.map(findBest, resistors)
         best = results[0]
         for r in results:
